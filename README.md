@@ -1,5 +1,5 @@
 
-![Image Description](![alt text](Aloha.png))
+(![alt text](Aloha.png))
 
 # Hawaii Climate Analyis for period ending 2017-08-23
 This project contains analysis and exploration of climate data for Hawaii for the period ending 2017-08-23.
