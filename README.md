@@ -1,6 +1,9 @@
 
 (![alt text](Aloha.png))
 
+![Static Badge](https://img.shields.io/badge/Climate%20exploration%20in%20Hawaii)
+
+
 # Hawaii Climate Analyis for period ending 2017-08-23
 This project contains analysis and exploration of climate data for Hawaii for the period ending 2017-08-23.
 There is a jupyter notebook file contained in the SurfsUp folder that links to the hawaii.sqlite database file in the resources folder.
