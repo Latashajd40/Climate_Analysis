@@ -12,8 +12,6 @@ from sqlalchemy import create_engine, func
 import json
 from flask import Flask, jsonify
 
-
-
 #################################################
 # Database Setup
 #################################################
@@ -27,13 +25,11 @@ Base = automap_base()
 # Use the Base class to reflect the database tables
 Base.prepare(autoload_with=engine)
 
-
 # Assign the measurement class to a variable called `Measurement` and
 Measurement = Base.classes.measurement
 
 # the station class to a variable called `Station`
 Station = Base.classes.station
-
 
 # Create a session
 session = Session(engine)
@@ -44,8 +40,6 @@ session = Session(engine)
 
 #create an app
 app = Flask(__name__)
-
-
 
 #################################################
 # Flask Routes
@@ -95,8 +89,10 @@ def stations():
     query = session.query(Measurement.station).\
     group_by(Measurement.station).all()
     
+    #convert the query to a list
     query_list = [dict(row) for row in query]
     
+    #make data more readable
     json_data = json.dumps(query_list)
     
     session.close()
@@ -117,6 +113,7 @@ def total_observations():
                 
     query_list = [dict(row) for row in previous_twelve]
     
+    #make data more readable
     json_data = json.dumps(query_list)
     
     session.close()
@@ -125,7 +122,9 @@ def total_observations():
 
 @app.route("/api/v1.0/<start>")
 def start_date(start):
+    """Query the database to get the min, max, avg temperature for the inputted start date"""
     
+    #verify the user inputted the date with the correct format
     try:
         # Attempt to parse the date string
         datetime.strptime(start, '%Y-%m-%d')
@@ -135,6 +134,7 @@ def start_date(start):
     # Create a link from Python to the database
     session = Session(engine)
     
+    #query the database for min, max, avg temperature for greater than or equal to the start date
     sel = [func.min(Measurement.tobs), func.max(Measurement.tobs), func.avg(Measurement.tobs)]
     station_summary = session.query(*sel).filter(Measurement.date >= start).all()
     
@@ -153,7 +153,9 @@ def start_date(start):
 
 @app.route("/api/v1.0/<start>/<end>")
 def start_and_end_date(start, end):
-      
+    """Query the database to get the min, max, avg temperature for the inputted start and end date"""
+
+    #verify the user inputted the date with the correct format
     try:
         # Attempt to parse the date string
         datetime.strptime(start, '%Y-%m-%d')
@@ -169,6 +171,7 @@ def start_and_end_date(start, end):
     # Create a link from Python to the database
     session = Session(engine)
     
+    #query the database for min, max, avg temperature for the period specified by the start and end date
     sel = [func.min(Measurement.tobs), func.max(Measurement.tobs), func.avg(Measurement.tobs)]
     station_summary = session.query(*sel).filter(Measurement.date >= start, Measurement.date <= end).all()
     
@@ -183,8 +186,8 @@ def start_and_end_date(start, end):
         new_dict['Avg'] = avg
         query.append(new_dict)
     
-    return jsonify(query)
-    
+    return jsonify(query) 
+
 
 if __name__ == '__main__':
     app.run(debug=True)
